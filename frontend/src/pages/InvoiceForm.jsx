@@ -190,7 +190,6 @@ function InvoiceForm() {
                 <div key={index} className="flex gap-2 items-center bg-gray-50 p-4 rounded-lg border border-gray-100 flex-wrap md:flex-nowrap">
                   <input type="text" name="description" placeholder="Description" value={item.description} onChange={(e) => handleItemChange(index, e)} required className="flex-grow min-w-[200px] p-2 border rounded" />
                   <input type="text" name="sacCode" placeholder="SAC Code" value={item.sacCode} onChange={(e) => handleItemChange(index, e)} className="w-24 p-2 border rounded" />
-                  <input type="number" name="quantity" placeholder="Qty" value={item.quantity} onChange={(e) => handleItemChange(index, e)} required className="w-20 p-2 border rounded" />
                   <input type="number" name="price" placeholder="Price" value={item.price} onChange={(e) => handleItemChange(index, e)} required className="w-24 p-2 border rounded" />
                   <div className="flex items-center w-24 bg-white border rounded">
                     <input type="number" name="gstRate" placeholder="GST" value={item.gstRate} onChange={(e) => handleItemChange(index, e)} className="w-full p-2 rounded outline-none" />

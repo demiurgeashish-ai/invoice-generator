@@ -76,7 +76,13 @@ function InvoicePage() {
           </div>
           <div className="text-right">
             <h2 className="text-xl font-bold text-gray-800">{company.name}</h2>
-            <p className="text-gray-600 whitespace-pre-line">{company.address?.full}</p>
+            {company.address?.line1 && <p className="text-gray-600">{company.address.line1}</p>}
+            {company.address?.line2 && <p className="text-gray-600">{company.address.line2}</p>}
+            {(company.address?.state || company.address?.pincode) && (
+              <p className="text-gray-600">
+                {[company.address.state, company.address.pincode].filter(Boolean).join(', ')}
+              </p>
+            )}
             {company.tax?.gst && <p className="text-gray-600">GSTIN: {company.tax.gst}</p>}
             {company.tax?.pan && <p className="text-gray-600">PAN: {company.tax.pan}</p>}
             <p className="text-gray-600">{company.contact?.email}</p>
@@ -103,7 +109,6 @@ function InvoicePage() {
               <tr className="text-white" style={{ backgroundColor: primaryColor }}>
                 <th className="p-3 font-semibold uppercase text-sm">Description</th>
                 <th className="p-3 font-semibold uppercase text-sm text-center">SAC Code</th>
-                <th className="p-3 font-semibold uppercase text-sm text-center">Qty</th>
                 <th className="p-3 font-semibold uppercase text-sm text-right">Price</th>
                 <th className="p-3 font-semibold uppercase text-sm text-right">GST</th>
                 <th className="p-3 font-semibold uppercase text-sm text-right">Amount</th>
@@ -114,7 +119,6 @@ function InvoicePage() {
                 <tr key={index} className="border-b border-gray-200">
                   <td className="p-3 text-gray-800">{item.description}</td>
                   <td className="p-3 text-center text-gray-600">{item.sacCode || '-'}</td>
-                  <td className="p-3 text-center text-gray-800">{item.quantity}</td>
                   <td className="p-3 text-right text-gray-800">₹{item.price.toFixed(2)}</td>
                   <td className="p-3 text-right text-gray-600">
                     {item.gstRate ? `${item.gstRate}%` : '-'}
