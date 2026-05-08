@@ -81,10 +81,10 @@ function View() {
     const selectedData = invoices.filter(inv => selectedInvoices.includes(inv._id));
     const excelData = selectedData.map(inv => ({
       'Invoice No': inv.invoiceNo,
-      'Client Name': inv.client?.name || 'N/A',
       'Date': new Date(inv.date).toLocaleDateString(),
-      'Total Amount': inv.total,
-      'Status': inv.status || 'Unpaid'
+      'Client Name': inv.client?.name || 'N/A',
+      'GST Number': inv.client?.gst || 'N/A',
+      'Amount': inv.total
     }));
 
     const worksheet = XLSX.utils.json_to_sheet(excelData);
