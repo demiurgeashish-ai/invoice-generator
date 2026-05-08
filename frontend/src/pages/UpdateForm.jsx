@@ -17,7 +17,7 @@ function UpdateForm() {
 
   const [client, setClient] = useState({ name: '', email: '', phone: '', address: '', gst: '' });
   const [items, setItems] = useState([]);
-  const [invoice, setInvoice] = useState({ date: '', dueDate: '', notes: '', status: 'Unpaid' });
+  const [invoice, setInvoice] = useState({ invoiceNo: '', date: '', dueDate: '', notes: '', status: 'Unpaid' });
 
   useEffect(() => {
     if (!currentInvoice || !currentInvoice._id) {
@@ -27,6 +27,7 @@ function UpdateForm() {
     setClient(currentInvoice.client || {});
     setItems(currentInvoice.items || []);
     setInvoice({
+      invoiceNo: currentInvoice.invoiceNo || '',
       date: new Date(currentInvoice.date).toISOString().split('T')[0],
       dueDate: currentInvoice.dueDate ? new Date(currentInvoice.dueDate).toISOString().split('T')[0] : '',
       notes: currentInvoice.notes || '',
@@ -64,7 +65,7 @@ function UpdateForm() {
       
       const invoiceData = {
         client: currentInvoice.client._id,
-        invoiceNo: currentInvoice.invoiceNo, // Cannot be changed
+        invoiceNo: invoice.invoiceNo.trim() || currentInvoice.invoiceNo,
         date: invoice.date,
         dueDate: invoice.dueDate,
         items,
@@ -108,6 +109,16 @@ function UpdateForm() {
             <div>
               <h3 className="text-lg font-semibold mb-4 text-gray-700" style={{ color: primaryColor }}>Invoice Details</h3>
               <div className="space-y-4">
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">Invoice Number</label>
+                  <input
+                    type="text"
+                    value={invoice.invoiceNo}
+                    onChange={(e) => setInvoice({ ...invoice, invoiceNo: e.target.value })}
+                    className="w-full p-3 border rounded focus:ring-2 outline-none font-medium"
+                    style={{ '--tw-ring-color': primaryColor }}
+                  />
+                </div>
                 <div className="flex gap-4">
                   <div className="w-1/2">
                     <label className="block text-sm text-gray-600 mb-1">Issue Date</label>

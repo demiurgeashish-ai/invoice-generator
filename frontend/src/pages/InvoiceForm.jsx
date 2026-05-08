@@ -17,7 +17,7 @@ function InvoiceForm() {
 
   const [client, setClient] = useState({ name: '', email: '', phone: '', address: '', gst: '' });
   const [items, setItems] = useState([{ description: '', sacCode: '', quantity: 1, price: 0, gstRate: 0, amount: 0 }]);
-  const [invoice, setInvoice] = useState({ date: new Date().toISOString().split('T')[0], dueDate: '', notes: '' });
+  const [invoice, setInvoice] = useState({ invoiceNo: '', date: new Date().toISOString().split('T')[0], dueDate: '', notes: '' });
 
   const [existingClients, setExistingClients] = useState([]);
   const [showSuggestions, setShowSuggestions] = useState(false);
@@ -74,6 +74,7 @@ function InvoiceForm() {
       
       const invoiceData = {
         client: clientRes.data._id,
+        ...(invoice.invoiceNo.trim() && { invoiceNo: invoice.invoiceNo.trim() }),
         date: invoice.date,
         dueDate: invoice.dueDate,
         items,
@@ -157,7 +158,17 @@ function InvoiceForm() {
             <div>
               <h3 className="text-lg font-semibold mb-4 text-gray-700" style={{ color: primaryColor }}>Invoice Details</h3>
               <div className="space-y-4">
-                <input type="text" value="Auto-generated on save" readOnly className="w-full p-3 border rounded bg-gray-100 cursor-not-allowed text-gray-500 font-medium" />
+                <div>
+                  <label className="block text-sm text-gray-600 mb-1">Invoice Number <span className="text-gray-400">(leave blank to auto-generate)</span></label>
+                  <input
+                    type="text"
+                    placeholder={`e.g. ${prefix}00001`}
+                    value={invoice.invoiceNo}
+                    onChange={(e) => setInvoice({ ...invoice, invoiceNo: e.target.value })}
+                    className="w-full p-3 border rounded focus:ring-2 outline-none font-medium"
+                    style={{ '--tw-ring-color': primaryColor }}
+                  />
+                </div>
                 <div className="flex gap-4">
                   <div className="w-1/2">
                     <label className="block text-sm text-gray-600 mb-1">Issue Date</label>

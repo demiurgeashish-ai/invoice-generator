@@ -62,16 +62,27 @@ router.post('/', async (req, res) => {
   try {
     const validatedData = invoiceSchema.parse(req.body);
 
-    const business = await Business.findOne({ user: req.user._id });
-    const prefix = business?.branding?.invoicePrefix || 'IN';
-    const count = await Invoice.countDocuments({ user: req.user._id });
-    const invoiceNumStr = String(count + 1).padStart(5, '0');
-    const generatedInvoiceNo = `${prefix}${invoiceNumStr}`;
+    let finalInvoiceNo;
+
+    if (validatedData.invoiceNo && validatedData.invoiceNo.trim()) {
+      // User provided a manual invoice number — check it's not already taken
+      const existing = await Invoice.findOne({ user: req.user._id, invoiceNo: validatedData.invoiceNo.trim() });
+      if (existing) {
+        return res.status(400).json({ message: `Invoice number "${validatedData.invoiceNo.trim()}" already exists. Please use a different number.` });
+      }
+      finalInvoiceNo = validatedData.invoiceNo.trim();
+    } else {
+      // Auto-generate: prefix + padded sequential count
+      const business = await Business.findOne({ user: req.user._id });
+      const prefix = business?.branding?.invoicePrefix || 'IN';
+      const count = await Invoice.countDocuments({ user: req.user._id });
+      finalInvoiceNo = `${prefix}${String(count + 1).padStart(5, '0')}`;
+    }
 
     const invoice = new Invoice({
       user: req.user._id,
       ...validatedData,
-      invoiceNo: generatedInvoiceNo
+      invoiceNo: finalInvoiceNo
     });
 
     const createdInvoice = await invoice.save();
